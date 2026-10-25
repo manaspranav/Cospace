@@ -1,69 +1,119 @@
-import Image from "next/image";
+import ButtonLink from "@/components/ButtonLink";
+import FeatureCard from "@/components/FeatureCard";
+import WhiteboardPreview from "@/components/WhiteboardPreview";
+import { Users, Mic, ClipboardList, Save } from "lucide-react";
+
+const features = [
+  {
+    icon: Users,
+    title: "Live collaboration",
+    description: "Draw, write and move ideas on one shared board together.",
+  },
+  {
+    icon: Mic,
+    title: "Voice chat",
+    description: "Talk with your team while you work, right inside the room.",
+  },
+  {
+    icon: ClipboardList,
+    title: "Planning",
+    description: "Keep tasks and notes next to the board so plans don't get lost.",
+  },
+  {
+    icon: Save,
+    title: "Saved workspaces",
+    description: "Come back later and reopen your boards exactly as you left them.",
+  },
+];
+
+const steps = [
+  {
+    title: "Create a room",
+    description: "Name your room and pick a display name. It takes a few seconds.",
+  },
+  {
+    title: "Invite your team",
+    description: "Copy the invitation link and share it with the people you want to work with.",
+  },
+  {
+    title: "Collaborate",
+    description: "Draw, talk and plan together on the same board in real time.",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <section className="mx-auto w-full max-w-6xl px-4 py-20 text-center sm:px-6 sm:py-28">
+        <p className="mb-4 inline-block rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700">
+          Ideas Meet Here.
+        </p>
+
+        <h1 className="mx-auto max-w-3xl text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+          Plan, draw and collaborate together in real time
+        </h1>
+
+        <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-600">
+          CoSpace is a shared workspace for college projects, brainstorms and
+          trips. Sketch ideas on one board and plan together in one place.
+        </p>
+
+        <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <ButtonLink href="/create-room">Create a Room</ButtonLink>
+          <ButtonLink href="/join-room" variant="secondary">
+            Join a Room
+          </ButtonLink>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+
+        <WhiteboardPreview />
+      </section>
+
+      <section
+        id="features"
+        className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6"
+      >
+        <h2 className="text-center text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+          Everything your team needs in one place
+        </h2>
+
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {features.map((feature) => (
+            <FeatureCard
+              key={feature.title}
+              icon={feature.icon}
+              title={feature.title}
+              description={feature.description}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          ))}
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section className="border-y border-slate-200 bg-white">
+        <div className="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6">
+          <h2 className="text-center text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            How it works
+          </h2>
+
+          <ol className="mt-10 grid gap-8 md:grid-cols-3">
+            {steps.map((step, index) => (
+              <li
+                key={step.title}
+                className="flex flex-col items-center text-center"
+              >
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 text-sm font-semibold text-white">
+                  {index + 1}
+                </span>
+                <h3 className="mt-4 text-base font-semibold text-slate-900">
+                  {step.title}
+                </h3>
+                <p className="mt-2 max-w-xs text-sm leading-6 text-slate-600">
+                  {step.description}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    </>
   );
 }
