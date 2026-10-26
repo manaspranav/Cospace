@@ -84,7 +84,7 @@ export default function WhiteboardPreview() {
           <div className="absolute left-[34%] top-[52%] flex items-start">
             <MousePointer2 size={18} className="fill-sky-500 text-sky-500" />
             <span className="-mt-1 ml-1 rounded-full bg-sky-500 px-2 py-0.5 text-xs text-white">
-              Asritha
+              Riya
             </span>
           </div>
           <div className="absolute right-[26%] top-[14%] flex items-start">
