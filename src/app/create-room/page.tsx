@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
 
 type FormErrors = {
@@ -8,10 +9,17 @@ type FormErrors = {
   displayName?: string;
 };
 
+function generateRoomId() {
+  const bytes = new Uint8Array(6);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
 export default function CreateRoomPage() {
   const [roomName, setRoomName] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
+  const router = useRouter();
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -38,10 +46,18 @@ export default function CreateRoomPage() {
       return;
     }
 
-    console.log("Valid form:", {
-      roomName: trimmedRoom,
-      displayName: trimmedName,
-    });
+      const roomId = generateRoomId();
+
+    try {
+      sessionStorage.setItem(
+        `cospace:room:${roomId}`,
+        JSON.stringify({ roomName: trimmedRoom, displayName: trimmedName })
+      );
+    } catch {
+      // Storage can be blocked by the browser. We still open the room.
+    }
+
+    router.push(`/room/${roomId}`);
   }
 
   return (
