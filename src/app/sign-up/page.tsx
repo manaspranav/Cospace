@@ -4,8 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
-export default function LoginPage() {
+export default function SignUpPage() {
   const router = useRouter();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -16,7 +17,7 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-    const { error } = await authClient.signIn.email({ email, password });
+    const { error } = await authClient.signUp.email({ name, email, password });
 
     setLoading(false);
     if (error) {
@@ -32,7 +33,18 @@ export default function LoginPage() {
         onSubmit={handleSubmit}
         className="w-full space-y-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
       >
-        <h1 className="text-2xl font-semibold text-gray-900">Log in</h1>
+        <h1 className="text-2xl font-semibold text-gray-900">Create your account</h1>
+
+        <label className="block text-sm font-medium text-gray-700">
+          Name
+          <input
+            type="text"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2"
+          />
+        </label>
 
         <label className="block text-sm font-medium text-gray-700">
           Email
@@ -46,10 +58,11 @@ export default function LoginPage() {
         </label>
 
         <label className="block text-sm font-medium text-gray-700">
-          Password
+          Password (at least 8 characters)
           <input
             type="password"
             required
+            minLength={8}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2"
@@ -67,7 +80,7 @@ export default function LoginPage() {
           disabled={loading}
           className="w-full rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
         >
-          {loading ? "Logging in..." : "Log in"}
+          {loading ? "Creating account..." : "Sign up"}
         </button>
       </form>
     </main>
