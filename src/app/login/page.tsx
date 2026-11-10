@@ -26,6 +26,17 @@ export default function LoginPage() {
     router.push("/account");
   }
 
+  async function handleGoogle() {
+    setError("");
+    const { error } = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/account",
+    });
+    if (error) {
+      setError(error.message ?? "Google sign-in failed. Please try again.");
+    }
+  }
+
   return (
     <main className="mx-auto flex min-h-[70vh] max-w-md items-center px-4 py-12">
       <form
@@ -68,6 +79,14 @@ export default function LoginPage() {
           className="w-full rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
         >
           {loading ? "Logging in..." : "Log in"}
+        </button>
+
+        <button
+          type="button"
+          onClick={handleGoogle}
+          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium text-gray-800 hover:bg-gray-50"
+        >
+          Continue with Google
         </button>
       </form>
     </main>
