@@ -9,19 +9,15 @@ type FormErrors = {
   displayName?: string;
 };
 
-function generateRoomId() {
-  const bytes = new Uint8Array(6);
-  crypto.getRandomValues(bytes);
-  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
-}
-
 export default function CreateRoomPage() {
   const [roomName, setRoomName] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [serverError, setServerError] = useState("");
   const router = useRouter();
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const trimmedRoom = roomName.trim();
@@ -46,7 +42,34 @@ export default function CreateRoomPage() {
       return;
     }
 
-      const roomId = generateRoomId();
+    setServerError("");
+    setSubmitting(true);
+
+    let roomId: string;
+    try {
+      const res = await fetch("/api/rooms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ roomName: trimmedRoom }),
+      });
+
+      if (res.status === 401) {
+        router.push("/login");
+        return;
+      }
+
+      const data = await res.json();
+      if (!res.ok) {
+        setServerError(data.error ?? "Could not create the room.");
+        setSubmitting(false);
+        return;
+      }
+      roomId = data.roomId;
+    } catch {
+      setServerError("Network problem. Please try again.");
+      setSubmitting(false);
+      return;
+    }
 
     try {
       sessionStorage.setItem(
@@ -137,11 +160,18 @@ export default function CreateRoomPage() {
             )}
           </div>
 
+          {serverError && (
+            <p role="alert" className="text-sm text-red-600">
+              {serverError}
+            </p>
+          )}
+
           <button
             type="submit"
-            className="w-full rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            disabled={submitting}
+            className="w-full rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-60"
           >
-            Create Room
+            {submitting ? "Creating..." : "Create Room"}
           </button>
         </form>
       </div>

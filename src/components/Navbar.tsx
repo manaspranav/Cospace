@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import Logo from "./Logo";
 import ButtonLink from "./ButtonLink";
+import { authClient } from "@/lib/auth-client";
 
 const links = [
   { label: "Home", href: "/" },
@@ -13,6 +15,14 @@ const links = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const { data: session, isPending } = authClient.useSession();
+
+  async function handleSignOut() {
+    setOpen(false);
+    await authClient.signOut();
+    router.push("/");
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
@@ -32,6 +42,28 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+          {!isPending &&
+            (session ? (
+              <>
+                <span className="text-sm font-medium text-slate-700">
+                  {session.user.name}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="text-sm font-medium text-slate-600 hover:text-slate-900"
+                >
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="text-sm font-medium text-slate-600 hover:text-slate-900"
+              >
+                Log in
+              </Link>
+            ))}
           <ButtonLink href="/create-room">Create Room</ButtonLink>
         </div>
 
@@ -59,6 +91,24 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+            {!isPending &&
+              (session ? (
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="rounded-lg px-2 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-100"
+                >
+                  Sign out ({session.user.name})
+                </button>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={() => setOpen(false)}
+                  className="rounded-lg px-2 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+                >
+                  Log in
+                </Link>
+              ))}
             <ButtonLink href="/create-room">Create Room</ButtonLink>
           </div>
         </div>
